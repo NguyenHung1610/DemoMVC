@@ -16,9 +16,10 @@ public class Demo : Controller
         return View();
     }
 
-    public IActionResult Edit(int id)
+
+    public string GG ()
     {
-      return Content("ID = " + id);
+        return "heloo world";
     }
 
 

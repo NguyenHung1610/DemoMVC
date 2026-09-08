@@ -1,0 +1,13 @@
+<h1>View Index</h1>
+<h2>@ViewBag.title</h2>
+<ul>
+      <li>Hiển thị kết quả</li>
+</ul>
+
+<form asp-action="Index" method="post">
+       <input type = "text" name = "FullName" placeholder ="Nhập họ và tên"/>
+       <input type = "text" name = "Address" placeholder ="Nhập địa chỉ"/>
+       <input type = "text" name = "School" placeholder ="Nhập tên trường"/>
+       <input type = "submit" value = "Gửi dữ liệu" />
+</form>
+<h2> @ViewBag.data</h2>
