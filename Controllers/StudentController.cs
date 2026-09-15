@@ -31,11 +31,21 @@ namespace DemoMVC.Controllers
                  
             }      
 
-           
+           [HttpGet]
           public IActionResult Create()
             {
                   return View();
             }
+          
+            
+          public IActionResult Create(Student student)
+    {
+
+        TempData["Message"] = "Thêm Student thành công!";
+
+        return RedirectToAction("Index");
+    }
+}
+
 
       }
-}

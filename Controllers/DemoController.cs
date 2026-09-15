@@ -4,28 +4,32 @@ using DemoMVC.Models;
 
 namespace DemoMVC.Controllers;
 
-public class Demo : Controller
+public class DemoController : Controller
 {
+    // GET: /Student/Index
     public IActionResult Index()
     {
+        ViewBag.FullName = "Nguyen Van An";
+
+        ViewData["Address"] = "Ha Noi";
+
         return View();
     }
 
-    public IActionResult Privacy()
+    // GET: /Student/Create
+    public IActionResult Create()
     {
         return View();
     }
 
-
-    public string GG ()
+    // POST: /Student/Create
+    [HttpPost]
+    public IActionResult Create(Student student)
     {
-        return "heloo world";
-    }
+        // Giả sử lưu Student vào database thành công
 
+        TempData["Message"] = "Thêm Student thành công!";
 
-    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    public IActionResult Error()
-    {
-        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        return RedirectToAction("Index");
     }
 }

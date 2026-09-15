@@ -96,3 +96,4 @@ E:\DemoMVC\obj\Debug\net10.0\refint\DemoMVC.dll
 E:\DemoMVC\obj\Debug\net10.0\DemoMVC.pdb
 E:\DemoMVC\obj\Debug\net10.0\DemoMVC.genruntimeconfig.cache
 E:\DemoMVC\obj\Debug\net10.0\ref\DemoMVC.dll
+E:\DemoMVC\obj\Debug\net10.0\compressed\uoog3p6aoc-{0}-45h7dx1jnt-45h7dx1jnt.gz

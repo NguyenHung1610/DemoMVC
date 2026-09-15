@@ -1,0 +1,22 @@
+@{
+    ViewBag.Title = "Trang Chủ";
+}
+
+<h2>Ví dụ sử dụng ViewBag và ViewData</h2>
+
+<!-- Đọc ViewBag (không cần ép kiểu) -->
+<p style="color: blue;">@ViewBag.ThongBaoBag</p>
+<p>Năm học: @ViewBag.NamHoc</p>
+
+<hr />
+
+<!-- Đọc ViewData (cần ép kiểu nếu muốn dùng chính xác phương thức của kiểu dữ liệu đó) -->
+<p style="color: green;">@ViewData["ThongBaoData"]</p>
+<p>Số lượng: @ViewData["SoLuong"]</p>
+
+<hr />
+
+<!-- Link chuyển hướng để kiểm tra TempData -->
+<p>
+    @Html.ActionLink("Chuyển sang trang Create để test TempData", "Create")
+</p>
