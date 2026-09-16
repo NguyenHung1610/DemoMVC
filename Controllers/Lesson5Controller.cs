@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DemoMVC.Controllers;
 
-public class Exam : Controller
+public class Lesson5 : Controller
 {
     public IActionResult Index()
     {

@@ -4,7 +4,7 @@ using DemoMVC.Models;
 
 namespace DemoMVC.Controllers;
 
-public class DemoController : Controller
+public class Lesson4Controller : Controller
 {
     // GET: /Student/Index
     public IActionResult Index()
