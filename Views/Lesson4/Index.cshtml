@@ -1,7 +1,7 @@
-<h1>Thông tin sinh viên</h1>
-<h2>FullName: @ViewBag.FullName</h2>
-<h2>Address: @ViewData["Address"]</h2>
-@if (TempData["Message"] != null)
-{
-    <p>@TempData["Message"]</p>
-}
+<form asp-action="Index" method="post">
+       <input type = "text" name = "FullName" placeholder ="Nhập họ và tên"/>
+       <input type = "text" name = "Address" placeholder ="Nhập địa chỉ"/>
+       <input type = "text" name = "School" placeholder ="Nhập tên trường"/>
+       <input type = "submit" value = "Gửi dữ liệu" />
+</form>
+<h2> @ViewBag.data</h2>

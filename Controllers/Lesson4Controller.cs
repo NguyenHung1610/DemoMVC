@@ -1,35 +1,51 @@
-using System.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
 using DemoMVC.Models;
+using Microsoft.AspNetCore.Mvc;
 
-namespace DemoMVC.Controllers;
-
-public class Lesson4Controller : Controller
+namespace DemoMVC.Controllers
 {
-    // GET: /Student/Index
-    public IActionResult Index()
+
+     
+      public class Lesson4Controller : Controller
+      {
+      
+
+     
+             public IActionResult Index()
+            {
+                  ViewBag.Title = "Hello word";
+                  return View();
+            }
+          
+          [HttpPost]
+      
+            public IActionResult Index( Student std)
+            {
+                 
+             var data = $"FullName: {std.FullName}, Address: {std.Address}, School:{std.School}";
+
+              ViewBag.data = data;
+
+
+                  return View();
+
+                 
+            }      
+
+           [HttpGet]
+          public IActionResult Create()
+            {
+                  return View();
+            }
+          
+            
+          public IActionResult Create(Student student)
     {
-        ViewBag.FullName = "Nguyen Van An";
-
-        ViewData["Address"] = "Ha Noi";
-
-        return View();
-    }
-
-    // GET: /Student/Create
-    public IActionResult Create()
-    {
-        return View();
-    }
-
-    // POST: /Student/Create
-    [HttpPost]
-    public IActionResult Create(Student student)
-    {
-        // Giả sử lưu Student vào database thành công
 
         TempData["Message"] = "Thêm Student thành công!";
 
         return RedirectToAction("Index");
     }
 }
+
+
+      }
