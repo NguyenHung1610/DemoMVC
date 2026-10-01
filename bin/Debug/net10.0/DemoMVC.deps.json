@@ -8,6 +8,7 @@
     ".NETCoreApp,Version=v10.0": {
       "DemoMVC/1.0.0": {
         "dependencies": {
+          "EPPlus": "8.7.1",
           "Microsoft.EntityFrameworkCore.Design": "10.0.12",
           "Microsoft.EntityFrameworkCore.SqlServer": "10.0.12",
           "Microsoft.EntityFrameworkCore.Sqlite": "10.0.12",
@@ -42,6 +43,26 @@
           "lib/net8.0/Azure.Identity.dll": {
             "assemblyVersion": "1.17.1.0",
             "fileVersion": "1.1700.125.56903"
+          }
+        }
+      },
+      "EPPlus/8.7.1": {
+        "dependencies": {
+          "EPPlus.Interfaces": "8.6.2",
+          "Microsoft.IO.RecyclableMemoryStream": "3.0.1"
+        },
+        "runtime": {
+          "lib/net10.0/EPPlus.dll": {
+            "assemblyVersion": "8.7.1.0",
+            "fileVersion": "8.7.1.0"
+          }
+        }
+      },
+      "EPPlus.Interfaces/8.6.2": {
+        "runtime": {
+          "lib/net10.0/EPPlus.Interfaces.dll": {
+            "assemblyVersion": "8.6.2.0",
+            "fileVersion": "8.6.2.0"
           }
         }
       },
@@ -1459,6 +1480,14 @@
           }
         }
       },
+      "Microsoft.IO.RecyclableMemoryStream/3.0.1": {
+        "runtime": {
+          "lib/net6.0/Microsoft.IO.RecyclableMemoryStream.dll": {
+            "assemblyVersion": "3.0.1.0",
+            "fileVersion": "3.0.1.0"
+          }
+        }
+      },
       "Microsoft.NET.StringTools/17.11.48": {
         "runtime": {
           "lib/net8.0/Microsoft.NET.StringTools.dll": {
@@ -2096,6 +2125,20 @@
       "path": "azure.identity/1.17.1",
       "hashPath": "azure.identity.1.17.1.nupkg.sha512"
     },
+    "EPPlus/8.7.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-ex6sXTZNoJzsw/C2EIhzMw4srBaDUmblrw52bu0//Xp4/IIERaD4m/soJhWeabMw5EIm3CjPN+sAdoqR+yoqLg==",
+      "path": "epplus/8.7.1",
+      "hashPath": "epplus.8.7.1.nupkg.sha512"
+    },
+    "EPPlus.Interfaces/8.6.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Xl1ncbV84UCz7QxcHuWjGa6PKXnOTwbC+y2ZdDqe5Zt5MbozWQINOwchcKW+agqx9Rybl2SQ3GdN1fbPIbjVOA==",
+      "path": "epplus.interfaces/8.6.2",
+      "hashPath": "epplus.interfaces.8.6.2.nupkg.sha512"
+    },
     "Humanizer/2.14.1": {
       "type": "package",
       "serviceable": true,
@@ -2704,6 +2747,13 @@
       "sha512": "sha512-fQ0VVCba75lknUHGldi3iTKAYUQqbzp1Un8+d9cm9nON0Gs8NAkXddNg8iaUB0qi/ybtAmNWizTR4avdkCJ9pQ==",
       "path": "microsoft.identitymodel.tokens/7.7.1",
       "hashPath": "microsoft.identitymodel.tokens.7.7.1.nupkg.sha512"
+    },
+    "Microsoft.IO.RecyclableMemoryStream/3.0.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-s/s20YTVY9r9TPfTrN5g8zPF1YhwxyqO6PxUkrYTGI2B+OGPe9AdajWZrLhFqXIvqIW23fnUE4+ztrUWNU1+9g==",
+      "path": "microsoft.io.recyclablememorystream/3.0.1",
+      "hashPath": "microsoft.io.recyclablememorystream.3.0.1.nupkg.sha512"
     },
     "Microsoft.NET.StringTools/17.11.48": {
       "type": "package",
