@@ -24,17 +24,35 @@
 
                     <form asp-action="Edit">
 
-                        <input type="hidden"
-                               asp-for="Id" />
+                        <!-- Khóa ẩn gửi mã sản phẩm về Server -->
+                        <input type="hidden" asp-for="ProductId" />
 
                         <div asp-validation-summary="ModelOnly"
                              class="text-danger mb-3">
                         </div>
 
+                        <!-- 1. Mã sản phẩm (Chỉ hiển thị, không cho sửa) -->
+                        <div class="mb-3">
+                            <label asp-for="ProductId"
+                                   class="form-label fw-semibold">
+                                Mã sản phẩm
+                            </label>
+
+                            <input asp-for="ProductId"
+                                   class="form-control bg-light"
+                                   readonly />
+
+                            <span asp-validation-for="ProductId"
+                                  class="text-danger">
+                            </span>
+                        </div>
+
+                        <!-- 2. Tên sản phẩm -->
                         <div class="mb-3">
 
                             <label asp-for="Name"
                                    class="form-label fw-semibold">
+                                Tên sản phẩm
                             </label>
 
                             <input asp-for="Name"
@@ -46,45 +64,52 @@
 
                         </div>
 
+                        <!-- 3. Giá bán -->
                         <div class="mb-3">
 
                             <label asp-for="Price"
                                    class="form-label fw-semibold">
+                                Giá bán
                             </label>
 
                             <input asp-for="Price"
-                                   class="form-control"
-                                   type="number"
-                                   min="0" />
+                                   class="form-control" />
 
                             <span asp-validation-for="Price"
                                   class="text-danger">
                             </span>
 
                         </div>
-<div class="mb-3">
-    <label asp-for="Quantity" class="form-label fw-bold">
-        Số lượng
-    </label>
 
-    <input asp-for="Quantity"
-           class="form-control"
-           placeholder="Nhập số lượng sản phẩm" />
-
-    <span asp-validation-for="Quantity"
-          class="text-danger">
-    </span>
-</div>
-                        <div class="mb-4">
-
-                            <label asp-for="Category"
-                                   class="form-label fw-semibold">
+                        <!-- 4. Số lượng -->
+                        <div class="mb-3">
+                            <label asp-for="Quantity" class="form-label fw-bold">
+                                Số lượng
                             </label>
 
-                            <input asp-for="Category"
-                                   class="form-control" />
+                            <input asp-for="Quantity"
+                                   class="form-control"
+                                   placeholder="Nhập số lượng sản phẩm" />
 
-                            <span asp-validation-for="Category"
+                            <span asp-validation-for="Quantity"
+                                  class="text-danger">
+                            </span>
+                        </div>
+
+                        <!-- 5. Danh mục sản phẩm (Khóa ngoại) -->
+                        <div class="mb-4">
+
+                            <label asp-for="CategoryId"
+                                   class="form-label fw-semibold">
+                                Danh mục sản phẩm
+                            </label>
+
+                            <select asp-for="CategoryId"
+                                    class="form-select"
+                                    asp-items="ViewBag.CategoryId">
+                            </select>
+
+                            <span asp-validation-for="CategoryId"
                                   class="text-danger">
                             </span>
 

@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using DemoMVC.Data;
+using DemoMVC.Models;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite(
@@ -37,3 +38,29 @@ app.MapControllerRoute(
 
 
 app.Run();
+// --- TỰ ĐỘNG THÊM DỮ LIỆU MẪU CHO CATEGORY ---
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    context.Database.EnsureCreated();
+
+    // Các danh mục bạn muốn chắc chắn phải có trong CSDL
+    var defaultCategories = new List<string> 
+    { 
+        "Đồ điện tử", 
+        "Đồ gia dụng", 
+        "Thiết bị điện dân dụng", 
+        "Thiết bị điện công nghiệp", 
+        "Linh kiện điện tử" 
+    };
+
+    foreach (var catName in defaultCategories)
+    {
+        // Nếu tên danh mục này chưa có thì mới thêm vào
+        if (!context.Categories.Any(c => c.CategoryName == catName))
+        {
+            context.Categories.Add(new Category { CategoryName = catName });
+        }
+    }
+    context.SaveChanges();
+}

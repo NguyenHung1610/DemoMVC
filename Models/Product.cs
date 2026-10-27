@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DemoMVC.Models
 {
@@ -18,8 +19,12 @@ namespace DemoMVC.Models
         [Range(1, 10000, ErrorMessage = "Số lượng phải từ 1 đến 10.000")]
         public int? Quantity { get; set; }
 
-        [Required(ErrorMessage = "Danh mục không được để trống")]
-        [StringLength(100, ErrorMessage = "Danh mục không được vượt quá 100 ký tự")]
-        public string Category { get; set; } = "";
-    }
+      [Required(ErrorMessage = "Vui lòng chọn danh mục sản phẩm")]
+        [Display(Name = "Danh mục")]
+        public int CategoryId { get; set; }
+
+        [ForeignKey("CategoryId")]
+        public Category? Category { get; set; }
+            public string ?ProductId { get; internal set; }
+      }
 }

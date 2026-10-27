@@ -43,7 +43,7 @@
 
                     <thead class="table-dark">
                         <tr>
-                            <th class="text-center">ID</th>
+                            <th class="text-center">Mã sản phẩm</th>
                             <th>Tên sản phẩm</th>
                             <th>Giá</th>
                             <th>Danh mục</th>
@@ -59,8 +59,9 @@
                             {
                                 <tr>
 
-                                    <td class="text-center">
-                                        @product.Id
+                                    <!-- 1. Hiển thị mã sản phẩm tự sinh dạng chuỗi -->
+                                    <td class="text-center fw-bold text-primary">
+                                        @product.ProductId
                                     </td>
 
                                     <td>
@@ -71,32 +72,34 @@
 
                                     <td>
                                         <span class="text-danger fw-bold">
-                                           @($"{product.Price:N0}") VND
+                                            @($"{product.Price:N0}") VND
                                         </span>
                                     </td>
 
+                                    <!-- 2. Hiển thị tên danh mục liên kết qua khóa ngoại -->
                                     <td>
                                         <span class="badge bg-secondary">
-                                            @product.Category
+                                            @product.Category?.CategoryName
                                         </span>
                                     </td>
 
+                                    <!-- 3. Nút hành động dùng mã ProductId -->
                                     <td class="text-center">
 
                                         <a asp-action="Details"
-                                           asp-route-id="@product.Id"
+                                           asp-route-id="@product.ProductId"
                                            class="btn btn-info btn-sm text-white">
                                             Chi tiết
                                         </a>
 
                                         <a asp-action="Edit"
-                                           asp-route-id="@product.Id"
+                                           asp-route-id="@product.ProductId"
                                            class="btn btn-warning btn-sm">
                                             Sửa
                                         </a>
 
                                         <a asp-action="Delete"
-                                           asp-route-id="@product.Id"
+                                           asp-route-id="@product.ProductId"
                                            class="btn btn-danger btn-sm">
                                             Xóa
                                         </a>

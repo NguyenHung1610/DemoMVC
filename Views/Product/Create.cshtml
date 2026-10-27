@@ -9,22 +9,42 @@
                 <div class="card-header bg-primary text-white">
                     <h2 class="mb-0">Thêm sản phẩm</h2>
                 </div>
-               
-             <hr>
-<form asp-action="Upload" enctype="multipart/form-data">
-    <div class="row form-control">
-        <label class="col-sm-2">Import data from Excel: </label>
-        <input type="file" name="file" class="col-sm-4">
-        <input type="submit" value="Upload" class="btn btn-primary col-sm-1">
-    </div>
-</form>
-<hr />
+                
+                <hr>
+                <form asp-action="Upload" enctype="multipart/form-data">
+                    <div class="row form-control mx-0">
+                        <label class="col-sm-4 col-form-label">Import data from Excel: </label>
+                        <div class="col-sm-5">
+                            <input type="file" name="file" class="form-control">
+                        </div>
+                        <div class="col-sm-3">
+                            <input type="submit" value="Upload" class="btn btn-primary w-100">
+                        </div>
+                    </div>
+                </form>
+                <hr />
 
                 <div class="card-body p-4">
 
                     <form asp-action="Create" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
-                        <!-- Tên sản phẩm -->
+                        <!-- 1. Mã sản phẩm tự động sinh (chỉ hiển thị, không cho sửa) -->
+                        <div class="mb-3">
+                            <label asp-for="ProductId" class="form-label fw-bold">
+                                Mã sản phẩm (Tự động)
+                            </label>
+
+                            <input asp-for="ProductId"
+                                   class="form-control bg-light"
+                                   readonly />
+
+                            <span asp-validation-for="ProductId"
+                                  class="text-danger">
+                            </span>
+                        </div>
+
+                        <!-- 2. Tên sản phẩm -->
                         <div class="mb-3">
                             <label asp-for="Name" class="form-label fw-bold">
                                 Tên sản phẩm
@@ -39,7 +59,7 @@
                             </span>
                         </div>
 
-                        <!-- Giá -->
+                        <!-- 3. Giá -->
                         <div class="mb-3">
                             <label asp-for="Price" class="form-label fw-bold">
                                 Giá
@@ -54,7 +74,7 @@
                             </span>
                         </div>
 
-                        <!-- Số lượng -->
+                        <!-- 4. Số lượng -->
                         <div class="mb-3">
                             <label asp-for="Quantity" class="form-label fw-bold">
                                 Số lượng
@@ -69,17 +89,19 @@
                             </span>
                         </div>
 
-                        <!-- Danh mục -->
+                        <!-- 5. Danh mục sản phẩm (Khóa ngoại) -->
                         <div class="mb-3">
-                            <label asp-for="Category" class="form-label fw-bold">
-                                Danh mục
+                            <label asp-for="CategoryId" class="form-label fw-bold">
+                                Danh mục sản phẩm
                             </label>
 
-                            <input asp-for="Category"
-                                   class="form-control"
-                                   placeholder="Ví dụ: Thiết bị điện" />
+                            <select asp-for="CategoryId"
+                                    class="form-select"
+                                    asp-items="ViewBag.CategoryId">
+                                <option value="">-- Chọn danh mục --</option>
+                            </select>
 
-                            <span asp-validation-for="Category"
+                            <span asp-validation-for="CategoryId"
                                   class="text-danger">
                             </span>
                         </div>
