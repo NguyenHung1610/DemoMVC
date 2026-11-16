@@ -16,14 +16,46 @@ namespace DemoMVC.Controllers
         }
 
         // GET: Product
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(
+            string? search,
+            int page = 1,
+            int pageSize = 10)
         {
-            // Include(p => p.Category) để lấy dữ liệu từ bảng khóa ngoại Category
-            var products = await _context.Products
+            search = search?.Trim() ?? string.Empty;
+            pageSize = pageSize is 10 or 20 or 50 ? pageSize : 10;
+
+            var query = _context.Products
+                .AsNoTracking()
                 .Include(p => p.Category)
+                .AsQueryable();
+
+            if (search.Length > 0)
+            {
+                query = query.Where(product =>
+                    (product.ProductId != null && product.ProductId.Contains(search)) ||
+                    product.Name.Contains(search) ||
+                    (product.Category != null &&
+                     product.Category.CategoryName != null &&
+                     product.Category.CategoryName.Contains(search)));
+            }
+
+            var totalCount = await query.CountAsync();
+            var totalPages = Math.Max(1, (int)Math.Ceiling(totalCount / (double)pageSize));
+            page = Math.Clamp(page, 1, totalPages);
+            var products = await query
+                .OrderBy(product => product.ProductId)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
                 .ToListAsync();
 
-            return View(products);
+            return View(new PagedResult<Product>
+            {
+                Items = products,
+                SearchTerm = search,
+                Page = page,
+                PageSize = pageSize,
+                TotalCount = totalCount
+            });
         }
 
         // GET: Product/Details/2610050001

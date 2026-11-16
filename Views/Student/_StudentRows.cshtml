@@ -1,0 +1,40 @@
+@model IEnumerable<DemoMVC.Models.Student>
+
+@if (Model.Any())
+{
+    @foreach (var student in Model)
+    {
+        <tr>
+            <td class="fw-semibold text-primary">@student.StudentCode</td>
+            <td>@student.FullName</td>
+            <td>@student.Email</td>
+            <td>@student.Department?.Name</td>
+            <td class="text-end text-nowrap">
+                <button type="button"
+                        class="btn btn-outline-info btn-sm js-student-modal"
+                        data-url="@Url.Action("Details", new { id = student.StudentCode })"
+                        data-title="Chi tiết sinh viên">
+                    Chi tiết
+                </button>
+                <button type="button"
+                        class="btn btn-outline-primary btn-sm js-student-modal"
+                        data-url="@Url.Action("Edit", new { id = student.StudentCode })"
+                        data-title="Sửa thông tin sinh viên">
+                    Sửa
+                </button>
+                <button type="button"
+                        class="btn btn-outline-danger btn-sm js-student-modal"
+                        data-url="@Url.Action("Delete", new { id = student.StudentCode })"
+                        data-title="Xóa sinh viên">
+                    Xóa
+                </button>
+            </td>
+        </tr>
+    }
+}
+else
+{
+    <tr>
+        <td colspan="5" class="text-center text-muted py-5">Chưa có sinh viên nào.</td>
+    </tr>
+}

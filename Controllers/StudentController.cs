@@ -15,20 +15,77 @@ public class StudentController : Controller
         _context = context;
     }
 
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(string? search, int page = 1, int pageSize = 10)
     {
-        var students = await _context.Student
+        return View(await GetStudentsPageAsync(search, page, pageSize));
+    }
+
+    public async Task<IActionResult> Table(string? search, int page = 1, int pageSize = 10)
+    {
+        return PartialView("_StudentTable", await GetStudentsPageAsync(search, page, pageSize));
+    }
+
+    private async Task<PagedResult<Student>> GetStudentsPageAsync(
+        string? search,
+        int page,
+        int pageSize)
+    {
+        search = search?.Trim() ?? string.Empty;
+        pageSize = pageSize is 10 or 20 or 50 ? pageSize : 10;
+
+        var query = _context.Student
             .AsNoTracking()
             .Include(student => student.Department)
+            .AsQueryable();
+
+        if (search.Length > 0)
+        {
+            query = query.Where(student =>
+                student.StudentCode.Contains(search) ||
+                student.FullName.Contains(search) ||
+                student.Email.Contains(search) ||
+                (student.Address != null && student.Address.Contains(search)) ||
+                (student.Department != null && student.Department.Name.Contains(search)));
+        }
+
+        var totalCount = await query.CountAsync();
+        var totalPages = Math.Max(1, (int)Math.Ceiling(totalCount / (double)pageSize));
+        page = Math.Clamp(page, 1, totalPages);
+
+        var students = await query
             .OrderBy(student => student.StudentCode)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
             .ToListAsync();
-        return View(students);
+
+        return new PagedResult<Student>
+        {
+            Items = students,
+            SearchTerm = search,
+            Page = page,
+            PageSize = pageSize,
+            TotalCount = totalCount
+        };
+    }
+
+    public async Task<IActionResult> Details(string? id)
+    {
+        if (id is null)
+        {
+            return NotFound();
+        }
+
+        var student = await _context.Student
+            .AsNoTracking()
+            .Include(item => item.Department)
+            .FirstOrDefaultAsync(item => item.StudentCode == id);
+        return student is null ? NotFound() : PartialView("_Details", student);
     }
 
     public async Task<IActionResult> Create()
     {
         await PopulateDepartmentsAsync();
-        return View(new Student { AdmissionYear = DateTime.Now.Year });
+        return PartialView("_Create", new Student { AdmissionYear = DateTime.Now.Year });
     }
 
     [HttpPost]
@@ -50,7 +107,8 @@ public class StudentController : Controller
         if (!ModelState.IsValid)
         {
             await PopulateDepartmentsAsync();
-            return View(student);
+            Response.StatusCode = StatusCodes.Status422UnprocessableEntity;
+            return PartialView("_Create", student);
         }
 
         var prefix = $"{student.AdmissionYear % 100:00}" +
@@ -72,15 +130,18 @@ public class StudentController : Controller
                 string.Empty,
                 $"Mã sinh viên với tiền tố {prefix} đã vượt quá 4 chữ số thứ tự.");
             await PopulateDepartmentsAsync();
-            return View(student);
+            Response.StatusCode = StatusCodes.Status422UnprocessableEntity;
+            return PartialView("_Create", student);
         }
 
         student.StudentCode = $"{prefix}{lastSequence + 1:0000}";
         _context.Student.Add(student);
         await _context.SaveChangesAsync();
 
-        TempData["Message"] = $"Đã thêm sinh viên với mã {student.StudentCode}.";
-        return RedirectToAction(nameof(Index));
+        return Json(new
+        {
+            message = $"Đã thêm sinh viên với mã {student.StudentCode}."
+        });
     }
 
     public async Task<IActionResult> Edit(string? id)
@@ -97,7 +158,7 @@ public class StudentController : Controller
         }
 
         await PopulateDepartmentsAsync();
-        return View(student);
+        return PartialView("_Edit", student);
     }
 
     [HttpPost]
@@ -129,7 +190,8 @@ public class StudentController : Controller
         if (!ModelState.IsValid)
         {
             await PopulateDepartmentsAsync();
-            return View(input);
+            Response.StatusCode = StatusCodes.Status422UnprocessableEntity;
+            return PartialView("_Edit", input);
         }
 
         student.FullName = input.FullName;
@@ -138,7 +200,7 @@ public class StudentController : Controller
         student.DepartmentCode = input.DepartmentCode;
         await _context.SaveChangesAsync();
 
-        return RedirectToAction(nameof(Index));
+        return Json(new { message = "Đã cập nhật thông tin sinh viên." });
     }
 
     public async Task<IActionResult> Delete(string? id)
@@ -152,7 +214,7 @@ public class StudentController : Controller
             .AsNoTracking()
             .Include(item => item.Department)
             .FirstOrDefaultAsync(item => item.StudentCode == id);
-        return student is null ? NotFound() : View(student);
+        return student is null ? NotFound() : PartialView("_Delete", student);
     }
 
     [HttpPost, ActionName("Delete")]
@@ -160,13 +222,14 @@ public class StudentController : Controller
     public async Task<IActionResult> DeleteConfirmed(string id)
     {
         var student = await _context.Student.FindAsync(id);
-        if (student is not null)
+        if (student is null)
         {
-            _context.Student.Remove(student);
-            await _context.SaveChangesAsync();
+            return NotFound();
         }
 
-        return RedirectToAction(nameof(Index));
+        _context.Student.Remove(student);
+        await _context.SaveChangesAsync();
+        return Json(new { message = "Đã xóa sinh viên." });
     }
 
     private async Task PopulateDepartmentsAsync()

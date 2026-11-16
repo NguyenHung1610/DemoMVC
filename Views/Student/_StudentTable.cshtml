@@ -1,0 +1,77 @@
+@model DemoMVC.Models.PagedResult<DemoMVC.Models.Student>
+
+<div data-search="@Model.SearchTerm" data-page="@Model.Page" data-page-size="@Model.PageSize">
+    <div class="card border-0 shadow-sm">
+        <div class="table-responsive">
+            <table class="table table-striped table-hover align-middle mb-0">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Mã sinh viên</th>
+                        <th>Họ và tên</th>
+                        <th>Email</th>
+                        <th>Khoa</th>
+                        <th class="text-end">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody id="student-rows">
+                    <partial name="_StudentRows" model="Model.Items" />
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mt-3">
+        <span class="text-muted">
+            @if (Model.TotalCount == 0)
+            {
+                <text>Không tìm thấy sinh viên phù hợp.</text>
+            }
+            else
+            {
+                var firstItem = (Model.Page - 1) * Model.PageSize + 1;
+                var lastItem = Math.Min(Model.Page * Model.PageSize, Model.TotalCount);
+                <text>Hiển thị @firstItem–@lastItem trong tổng số @Model.TotalCount sinh viên</text>
+            }
+        </span>
+
+        @if (Model.TotalPages > 1)
+        {
+            var firstPage = Math.Max(1, Model.Page - 2);
+            var lastPage = Math.Min(Model.TotalPages, Model.Page + 2);
+            <nav aria-label="Phân trang sinh viên">
+                <ul class="pagination mb-0">
+                    <li class="page-item @(Model.Page == 1 ? "disabled" : "")">
+                        <a class="page-link js-student-page"
+                           asp-action="Index"
+                           asp-route-search="@Model.SearchTerm"
+                           asp-route-page="@(Model.Page - 1)"
+                           asp-route-pageSize="@Model.PageSize"
+                           data-table-url="@Url.Action("Table", new { search = Model.SearchTerm, page = Model.Page - 1, pageSize = Model.PageSize })"
+                           aria-label="Trang trước">Trước</a>
+                    </li>
+                    @for (var pageNumber = firstPage; pageNumber <= lastPage; pageNumber++)
+                    {
+                        <li class="page-item @(pageNumber == Model.Page ? "active" : "")">
+                            <a class="page-link js-student-page"
+                               asp-action="Index"
+                               asp-route-search="@Model.SearchTerm"
+                               asp-route-page="@pageNumber"
+                               asp-route-pageSize="@Model.PageSize"
+                               data-table-url="@Url.Action("Table", new { search = Model.SearchTerm, page = pageNumber, pageSize = Model.PageSize })"
+                               aria-current="@(pageNumber == Model.Page ? "page" : null)">@pageNumber</a>
+                        </li>
+                    }
+                    <li class="page-item @(Model.Page == Model.TotalPages ? "disabled" : "")">
+                        <a class="page-link js-student-page"
+                           asp-action="Index"
+                           asp-route-search="@Model.SearchTerm"
+                           asp-route-page="@(Model.Page + 1)"
+                           asp-route-pageSize="@Model.PageSize"
+                           data-table-url="@Url.Action("Table", new { search = Model.SearchTerm, page = Model.Page + 1, pageSize = Model.PageSize })"
+                           aria-label="Trang sau">Sau</a>
+                    </li>
+                </ul>
+            </nav>
+        }
+    </div>
+</div>

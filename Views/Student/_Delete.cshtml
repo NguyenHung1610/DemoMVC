@@ -1,0 +1,17 @@
+@model DemoMVC.Models.Student
+
+<form asp-action="Delete" asp-route-id="@Model.StudentCode" method="post">
+    <div class="alert alert-warning" role="alert">
+        Bạn có chắc chắn muốn xóa sinh viên <strong>@Model.FullName</strong> không? Thao tác này không thể hoàn tác.
+    </div>
+    <dl class="row">
+        <dt class="col-sm-4">Mã sinh viên</dt>
+        <dd class="col-sm-8">@Model.StudentCode</dd>
+        <dt class="col-sm-4">Khoa</dt>
+        <dd class="col-sm-8">@Model.Department?.Name</dd>
+    </dl>
+    <div class="d-flex justify-content-end gap-2">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+        <button type="submit" class="btn btn-danger">Xóa sinh viên</button>
+    </div>
+</form>

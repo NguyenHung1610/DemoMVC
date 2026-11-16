@@ -1,43 +1,222 @@
-@model IEnumerable<DemoMVC.Models.Student>
+@model DemoMVC.Models.PagedResult<DemoMVC.Models.Student>
 
 @{
     ViewData["Title"] = "Danh sách sinh viên";
+    var tableUrl = Url.Action("Table");
 }
 
-<h1>Danh sách sinh viên</h1>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h2 mb-1">Danh sách sinh viên</h1>
+        <p class="text-muted mb-0">Quản lý thông tin sinh viên</p>
+    </div>
+    <button type="button"
+            class="btn btn-primary js-student-modal"
+            data-url="@Url.Action("Create")"
+            data-title="Thêm sinh viên">
+        Thêm sinh viên
+    </button>
+</div>
 
-@if (TempData["Message"] is string message)
-{
-    <div class="alert alert-success" role="alert">@message</div>
+<div id="student-message" class="alert alert-success d-none" role="status"></div>
+
+<form id="student-search-form" method="get" class="row g-2 align-items-end mb-3">
+    <div class="col-md-6">
+        <label for="student-search" class="form-label">Tìm kiếm sinh viên</label>
+        <input id="student-search"
+               name="search"
+               value="@Model.SearchTerm"
+               class="form-control"
+               placeholder="Mã, họ tên, email, địa chỉ hoặc khoa" />
+    </div>
+    <div class="col-6 col-md-2">
+        <label for="student-page-size" class="form-label">Số dòng</label>
+        <select id="student-page-size" name="pageSize" class="form-select">
+            @foreach (var size in new[] { 10, 20, 50 })
+            {
+                <option value="@size" selected="@(Model.PageSize == size ? "selected" : null)">@size</option>
+            }
+        </select>
+    </div>
+    <div class="col-6 col-md-auto d-flex gap-2">
+        <button type="submit" class="btn btn-outline-primary">Tìm kiếm</button>
+        <a asp-action="Index" class="btn btn-outline-secondary">Xóa lọc</a>
+    </div>
+</form>
+
+<div id="student-results" aria-live="polite">
+    <partial name="_StudentTable" model="Model" />
+</div>
+
+<div class="modal fade" id="student-modal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title fs-5" id="student-modal-title"></h2>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+            </div>
+            <div class="modal-body" id="student-modal-content"></div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        $(function () {
+            const modalElement = document.getElementById("student-modal");
+            const modal = bootstrap.Modal.getOrCreateInstance(modalElement);
+            const modalContent = $("#student-modal-content");
+            const tableUrl = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(tableUrl));
+
+            function updateAddressBar(params, replace) {
+                const url = new URL(window.location.href);
+                ["search", "page", "pageSize"].forEach(function (key) {
+                    if (params.get(key)) {
+                        url.searchParams.set(key, params.get(key));
+                    } else {
+                        url.searchParams.delete(key);
+                    }
+                });
+                window.history[replace ? "replaceState" : "pushState"]({}, "", url);
+            }
+
+            function loadStudentTable(params, updateHistory, replaceHistory) {
+                $("#student-results").attr("aria-busy", "true");
+                $.get(tableUrl, params.toString())
+                    .done(function (html) {
+                        $("#student-results").html(html).attr("aria-busy", "false");
+                        if (updateHistory) {
+                            const results = $("#student-results");
+                            const currentParams = new URLSearchParams({
+                                search: results.children().attr("data-search") || "",
+                                page: results.children().attr("data-page") || "1",
+                                pageSize: results.children().attr("data-page-size") || "10"
+                            });
+                            $("#student-search").val(currentParams.get("search"));
+                            $("#student-page-size").val(currentParams.get("pageSize"));
+                            updateAddressBar(currentParams, replaceHistory);
+                        }
+                    })
+                    .fail(function (xhr) {
+                        $("#student-results").attr("aria-busy", "false");
+                        $("#student-message")
+                            .removeClass("alert-success d-none")
+                            .addClass("alert-danger")
+                            .text("Không thể tải danh sách (HTTP " + xhr.status + "). Vui lòng thử lại.");
+                    });
+            }
+
+            function currentStudentTableParams() {
+                const results = $("#student-results").children().first();
+                return new URLSearchParams({
+                    search: results.attr("data-search") || "",
+                    page: results.attr("data-page") || "1",
+                    pageSize: results.attr("data-page-size") || "10"
+                });
+            }
+
+            function parseValidation(form) {
+                const $form = $(form);
+                $form.removeData("validator").removeData("unobtrusiveValidation");
+                $.validator.unobtrusive.parse($form);
+            }
+
+            $("#student-search-form").on("submit", function (event) {
+                event.preventDefault();
+                const params = new URLSearchParams($(this).serialize());
+                params.set("page", "1");
+                loadStudentTable(params, true, false);
+            });
+
+            $("#student-page-size").on("change", function () {
+                $("#student-search-form").trigger("submit");
+            });
+
+            $(document).on("click", ".js-student-page", function (event) {
+                event.preventDefault();
+                if ($(this).closest(".page-item").hasClass("disabled")) {
+                    return;
+                }
+                const tableUrl = new URL($(this).data("table-url"), window.location.origin);
+                loadStudentTable(tableUrl.searchParams, true, false);
+            });
+
+            window.addEventListener("popstate", function () {
+                const params = new URLSearchParams(window.location.search);
+                if (!params.has("pageSize")) {
+                    params.set("pageSize", "10");
+                }
+                $("#student-search").val(params.get("search") || "");
+                $("#student-page-size").val(params.get("pageSize"));
+                loadStudentTable(params, false, false);
+            });
+
+            $(document).on("click", ".js-student-modal", function () {
+                const button = $(this);
+                $("#student-modal-title").text(button.data("title"));
+                modalContent.html('<div class="text-center py-4" role="status">Đang tải...</div>');
+                modal.show();
+
+                $.get(button.data("url"))
+                    .done(function (html) {
+                        modalContent.html(html);
+                        parseValidation(modalContent.find("form"));
+                    })
+                    .fail(function (xhr) {
+                        modalContent.html(
+                            '<div class="alert alert-danger mb-0" role="alert">Không tải được biểu mẫu (HTTP ' +
+                            xhr.status + '). Vui lòng thử lại.</div>');
+                    });
+            });
+
+            $(document).on("submit", "#student-modal form", function (event) {
+                event.preventDefault();
+                const form = this;
+                if (!$(form).valid()) {
+                    return;
+                }
+
+                const submitButton = $(form).find('[type="submit"]');
+                submitButton.prop("disabled", true);
+
+                $.ajax({
+                    url: form.action,
+                    method: form.method || "POST",
+                    data: $(form).serialize()
+                })
+                    .done(function (result) {
+                        modal.hide();
+                        $("#student-message")
+                            .text(result.message)
+                            .removeClass("alert-danger")
+                            .addClass("alert-success")
+                            .removeClass("d-none");
+                        loadStudentTable(currentStudentTableParams(), true, true);
+                    })
+                    .fail(function (xhr) {
+                        if (xhr.status === 422) {
+                            modalContent.html(xhr.responseText);
+                            parseValidation(modalContent.find("form"));
+                            return;
+                        }
+
+                        const message = xhr.status === 404
+                            ? "Sinh viên không còn tồn tại. Hãy tải lại danh sách."
+                            : "Không thể lưu thay đổi (HTTP " + xhr.status + "). Vui lòng thử lại.";
+                        let error = modalContent.find(".js-student-request-error");
+                        if (!error.length) {
+                            error = $('<div class="alert alert-danger js-student-request-error" role="alert"></div>')
+                                .prependTo(modalContent);
+                        }
+                        error.text(message);
+                        submitButton.prop("disabled", false);
+                    });
+            });
+
+            modalElement.addEventListener("hidden.bs.modal", function () {
+                modalContent.empty();
+            });
+        });
+    </script>
 }
-
-<p>
-    <a asp-action="Create" class="btn btn-primary">Thêm sinh viên</a>
-</p>
-
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Mã sinh viên</th>
-            <th>Họ và tên</th>
-            <th>Email</th>
-            <th>Khoa</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var student in Model)
-        {
-            <tr>
-                <td>@student.StudentCode</td>
-                <td>@student.FullName</td>
-                <td>@student.Email</td>
-                <td>@student.Department?.Name</td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@student.StudentCode">Sửa</a> |
-                    <a asp-action="Delete" asp-route-id="@student.StudentCode">Xóa</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
