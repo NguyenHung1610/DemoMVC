@@ -32,6 +32,7 @@ builder.Services.ConfigureApplicationCookie(options =>
 });
 builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("Smtp"));
 builder.Services.AddTransient<IStudentEmailSender, SmtpStudentEmailSender>();
+builder.Services.AddScoped<ExcelImportService>();
 
 var app = builder.Build();
 

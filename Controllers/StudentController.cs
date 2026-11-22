@@ -244,4 +244,5 @@ public class StudentController : Controller
             nameof(Department.DepartmentCode),
             nameof(Department.Name));
     }
+
 }
