@@ -3,9 +3,11 @@ using DemoMVC.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DemoMVC.Controllers;
 
+[Authorize]
 public class StudentController : Controller
 {
     private readonly ApplicationDbContext _context;

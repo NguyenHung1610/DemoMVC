@@ -407,3 +407,4 @@ C:\Users\eriks\AppData\Local\Temp\DemoMVC-footer-layout-build\DemoMVC.pdb
 E:\DemoMVC\obj\Debug\net10.0\compressed\3xqpwvxjmo-{0}-v9adzqjvmz-v9adzqjvmz.gz
 E:\DemoMVC\obj\Debug\net10.0\compressed\q1zz9avq9c-{0}-gxb63pxre4-gxb63pxre4.gz
 E:\DemoMVC\obj\Debug\net10.0\compressed\h0opwfbn65-{0}-gxb63pxre4-gxb63pxre4.gz
+E:\DemoMVC\bin\Debug\net10.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll

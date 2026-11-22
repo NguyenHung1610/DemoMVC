@@ -1,0 +1,41 @@
+@model DemoMVC.Models.Account.ResendConfirmationViewModel
+
+@{
+    ViewData["Title"] = "Gửi lại email xác thực";
+}
+
+<div class="row justify-content-center py-4">
+    <div class="col-md-7 col-lg-5">
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+                <h1 class="h3 mb-3">Gửi lại email xác thực</h1>
+                @if (ViewData["StatusMessage"] is string status)
+                {
+                    <div class="alert alert-info" role="status">@status</div>
+                }
+                <form asp-action="ResendConfirmation" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label"></label>
+                        <input asp-for="Email" class="form-control" autocomplete="email" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Gửi email xác thực</button>
+                </form>
+                <div class="alert alert-info mt-4 mb-0" role="note">
+                    <strong>Nếu dùng Gmail:</strong> bật xác minh 2 bước và tạo Mật khẩu ứng dụng
+                    16 ký tự (bỏ khoảng trắng khi sao chép). Không dùng mật khẩu đăng nhập Gmail thông thường.
+                    Mở terminal tại thư mục dự án, thay email và mật khẩu mẫu bằng thông tin của bạn rồi chạy:
+                    <pre class="mt-2 mb-0"><code>dotnet user-secrets set "Smtp:SenderEmail" "your-address@gmail.com"
+dotnet user-secrets set "Smtp:Username" "your-address@gmail.com"
+dotnet user-secrets set "Smtp:Password" "your-16-character-app-password"</code></pre>
+                    Sau đó khởi động lại ứng dụng.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,23 @@
+@model bool
+
+@{
+    ViewData["Title"] = "Kết quả xác thực email";
+}
+
+<div class="row justify-content-center py-4">
+    <div class="col-md-8 col-lg-6">
+        @if (Model)
+        {
+            <div class="alert alert-success" role="status">
+                Email đã được xác thực. Bạn có thể <a asp-action="Login">đăng nhập</a>.
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-danger" role="alert">
+                Liên kết xác thực không hợp lệ hoặc đã hết hạn.
+                <a asp-action="ResendConfirmation">Gửi lại email xác thực</a>.
+            </div>
+        }
+    </div>
+</div>
